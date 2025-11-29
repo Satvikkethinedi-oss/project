@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export default function Users() {
+export default function Certificates() {
   const [certificates, setCertificates] = useState([]);
 
   useEffect(() => {
@@ -16,7 +16,7 @@ export default function Users() {
 
   return (
     <div style={{ padding: "40px" }}>
-      <h1>All Users Certificates</h1>
+      <h1>All Certificates</h1>
 
       {certificates.length === 0 ? (
         <p>No certificates added yet.</p>
@@ -31,18 +31,13 @@ export default function Users() {
                 borderRadius: "8px",
                 marginBottom: "20px",
                 width: "400px",
-                background: "#fafafa",
               }}
             >
               <h3>{cert.name}</h3>
               <p><strong>Issuer:</strong> {cert.issuer}</p>
               <p><strong>Date:</strong> {cert.date}</p>
 
-              <a
-                href={cert.fileURL}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <a href={cert.fileURL} target="_blank" rel="noopener noreferrer">
                 View Certificate
               </a>
             </div>
