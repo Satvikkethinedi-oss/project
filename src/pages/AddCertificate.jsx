@@ -1,78 +1,75 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { addCertificate } from "../utils/certificateStorage";
 
 export default function AddCertificate() {
-  const [name, setName] = useState("");
-  const [rollNo, setRollNo] = useState("");
-  const [course, setCourse] = useState("");
-  const [date, setDate] = useState("");
+  const [data, setData] = useState({
+    title: "",
+    issuer: "",
+    expiryDate: "",
+    file: ""
+  });
 
   const navigate = useNavigate();
+  const email = localStorage.getItem("currentUser");
 
-  const handleAdd = () => {
-    if (!name || !rollNo || !course || !date) {
-      alert("Please fill all fields!");
-      return;
-    }
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
-    const newCertificate = {
-      name,
-      rollNo,
-      course,
-      date,
-    };
+    const all = JSON.parse(localStorage.getItem("certificates")) || {};
+    if (!all[email]) all[email] = [];
 
-    addCertificate(newCertificate); // Save to localStorage
-    alert("Certificate added!");
-    navigate("/admin/manage-certificates"); // Move to admin page
+    // SAVE with correct field names
+    all[email].push({
+      title: data.title,
+      issuer: data.issuer,
+      expiryDate: data.expiryDate,
+      file: data.file
+    });
+
+    localStorage.setItem("certificates", JSON.stringify(all));
+
+    alert("Certificate Added!");
+    navigate("/dashboard");
   };
 
   return (
-    <div style={{ padding: "30px" }}>
-      <h2>Add Certificate</h2>
-      
-      <input
-        placeholder="Student Name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        style={{ marginBottom: "10px", display: "block", padding: "8px", width: "300px" }}
-      />
+    <div style={{ padding: "40px" }}>
+      <h1>Add New Certificate</h1>
 
-      <input
-        placeholder="Roll Number"
-        value={rollNo}
-        onChange={(e) => setRollNo(e.target.value)}
-        style={{ marginBottom: "10px", display: "block", padding: "8px", width: "300px" }}
-      />
+      <form onSubmit={handleSubmit} style={{ marginTop: "20px" }}>
+        <input
+          type="text"
+          placeholder="Certificate Title"
+          required
+          onChange={(e) => setData({ ...data, title: e.target.value })}
+        />
+        <br /><br />
 
-      <input
-        placeholder="Course Name"
-        value={course}
-        onChange={(e) => setCourse(e.target.value)}
-        style={{ marginBottom: "10px", display: "block", padding: "8px", width: "300px" }}
-      />
+        <input
+          type="text"
+          placeholder="Issuer"
+          required
+          onChange={(e) => setData({ ...data, issuer: e.target.value })}
+        />
+        <br /><br />
 
-      <input
-        type="date"
-        value={date}
-        onChange={(e) => setDate(e.target.value)}
-        style={{ marginBottom: "20px", display: "block", padding: "8px", width: "300px" }}
-      />
+        <input
+          type="date"
+          required
+          onChange={(e) => setData({ ...data, expiryDate: e.target.value })}
+        />
+        <br /><br />
 
-      <button
-        onClick={handleAdd}
-        style={{
-          padding: "10px 20px",
-          background: "#4f46e5",
-          color: "white",
-          border: "none",
-          borderRadius: "6px",
-          cursor: "pointer",
-        }}
-      >
-        Add Certificate
-      </button>
+        <input
+          type="text"
+          placeholder="Certificate URL"
+          required
+          onChange={(e) => setData({ ...data, file: e.target.value })}
+        />
+        <br /><br />
+
+        <button type="submit">Save Certificate</button>
+      </form>
     </div>
   );
 }
